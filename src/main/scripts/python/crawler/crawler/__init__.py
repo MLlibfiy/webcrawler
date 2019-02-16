@@ -2,5 +2,5 @@
 from scrapy import cmdline
 import time
 # 指定名字启动爬虫
-cmdline.execute("scrapy crawl guomei".split())
+cmdline.execute("scrapy crawl itcast".split())
 
