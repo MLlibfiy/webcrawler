@@ -31,7 +31,7 @@ object JIngDongDataToHbase {
     val splitWordRDD = infoRDD.flatMap(line => {
       val strs = line.split("\t")
       val id = strs(0)
-      val name = strs(7)
+      val name = strs(8)
 
       val words = IKUtrl.getStrs(name)
 
@@ -45,26 +45,30 @@ object JIngDongDataToHbase {
     splitWordRDD
       .filter(_._1.nonEmpty)
       .groupByKey()
-      .foreach(kv => {
+      .foreachPartition(i => {
+
         val dao = new HBaseDAOImp()
-        val word = kv._1
-        //对id去重
-        var ids = kv._2.toList.distinct
-        //根据词语查询之前的索引，将之前的所有和当前索引去重后写回到hbase
 
-        val md5Word = DigestUtils.md5Hex(word).toUpperCase
-        val result = dao.getOneRow("index", md5Word)
-        if (!result.isEmpty) {
-          val cell = result.listCells().get(0)
-          val lastIds = Bytes.toString(CellUtil.cloneValue(cell)).split("_").toList
-          ids = ids.:::(lastIds)
-        }
+        i.foreach(kv => {
+          val word = kv._1
+          //对id去重
+          var ids = kv._2.toList.distinct
+          //根据词语查询之前的索引，将之前的所有和当前索引去重后写回到hbase
 
-        val idsStr = ids.distinct.mkString("_")
+          val md5Word = DigestUtils.md5Hex(word).toUpperCase
+          val result = dao.getOneRow("index", md5Word)
+          if (!result.isEmpty) {
+            val cell = result.listCells().get(0)
+            val lastIds = Bytes.toString(CellUtil.cloneValue(cell)).split("_").toList
+            ids = ids.:::(lastIds)
+          }
 
-        val put = new Put(md5Word.getBytes())
-        put.add("info".getBytes(), "ids".getBytes(), idsStr.getBytes())
-        dao.save(put, "index")
+          val idsStr = ids.distinct.mkString("_")
+
+          val put = new Put(md5Word.getBytes())
+          put.add("info".getBytes(), "ids".getBytes(), idsStr.getBytes())
+          dao.save(put, "index")
+        })
       })
 
 
