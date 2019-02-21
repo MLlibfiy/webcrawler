@@ -128,6 +128,13 @@
             <version>1.3</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.janeluo</groupId>
+            <artifactId>ikanalyzer</artifactId>
+            <version>2012_u6</version>
+        </dependency>
+
     </dependencies>
 
 
