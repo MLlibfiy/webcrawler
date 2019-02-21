@@ -1,6 +1,7 @@
 package com.shujia.deal;
 
 import com.shujia.util.IKUtrl;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -10,7 +11,8 @@ import java.io.StringReader;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        String text = "惠普（HP）战66 Pro G1 14英寸轻薄笔记本电脑（i5-8250U 8G 16G傲腾SSD+1T 标压MX150 2G独显）银色";
-
+        //加密后的字符串
+        String encodeStr = DigestUtils.md5Hex("数加");
+        System.out.println("MD5加密后的字符串为:encodeStr=" + encodeStr.toUpperCase());
     }
 }
