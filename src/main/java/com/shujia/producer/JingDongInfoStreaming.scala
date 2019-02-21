@@ -27,12 +27,12 @@ object JingDongInfoStreaming {
       ssc,
       "node1:2181,node2:2181,node3:2181",
       "jingdong",
-      Map("info" -> 1) //1  接收数据的并行读
+      Map("jingdong_info" -> 1) //1  接收数据的并行读
     )
 
     DS.map(_._2)
       .foreachRDD(rdd => {
-        val basePath = "E:\\第二期\\大数据\\项目\\网络爬虫\\webcrawler\\data\\jingdong\\info\\"
+        val basePath = "E:\\第二期\\大数据\\项目\\网络爬虫\\webcrawler\\data\\jingdong\\info_tmp\\"
         val time = System.currentTimeMillis().toString.substring(0, 10)
         val path = basePath + "time=" + time
         rdd.saveAsTextFile(path)
